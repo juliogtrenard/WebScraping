@@ -5,4 +5,10 @@
     <string name="palabra">Ingresa la palabra</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
+    <string name="frecuencia">Frecuencia:</string>
+    <string-array name="opciones_frecuencia">
+        <item>10 minutos</item>
+        <item>30 minutos</item>
+        <item>1 hora</item>
+    </string-array>
 </resources>

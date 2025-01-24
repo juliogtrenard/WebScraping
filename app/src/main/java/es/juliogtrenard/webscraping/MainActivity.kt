@@ -6,13 +6,14 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -67,19 +68,40 @@ class MainActivity : AppCompatActivity() {
         val btnOn = findViewById<Button>(R.id.btnOn)
         val btnOff = findViewById<Button>(R.id.btnOff)
 
+        // Inicializar Spinner
+        val frecuenciaSpinner = findViewById<Spinner>(R.id.frecuenciaSpinner)
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.opciones_frecuencia,
+            android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        frecuenciaSpinner.adapter = adapter
+
         // Listener para el botón "On"
         btnOn.setOnClickListener {
             this.semaforo = "V"
             val sharedPreferences = getSharedPreferences("WebCheckerPrefs", MODE_PRIVATE)
             sharedPreferences.edit().putString("semaforo", semaforo).apply()
 
+            // Obtener la frecuencia seleccionada
+            val frecuenciaSeleccionada = frecuenciaSpinner.selectedItem.toString()
+            val intervaloMinutos = when (frecuenciaSeleccionada) {
+                "10 minutos" -> 10
+                "30 minutos" -> 30
+                "1 hora" -> 60
+                else -> 15 // Valor predeterminado si algo sale mal
+            }
+
+            // Cancelar cualquier trabajo existente
             WorkManager.getInstance(this).cancelAllWorkByTag(this.workTag)
+
+            // Crear y encolar el nuevo trabajo con la frecuencia seleccionada
             val workRequest = PeriodicWorkRequestBuilder<WebCheckerWorker>(
-                15, // Intervalo mínimo de 15 minutos
+                intervaloMinutos.toLong(), // Intervalo basado en la selección del usuario
                 TimeUnit.MINUTES
             ).addTag(this.workTag).build()
 
-            // Encolar el trabajo periódico
             WorkManager.getInstance(this).enqueue(workRequest)
 
             // Guardar el ID del trabajo en ejecución
@@ -97,14 +119,8 @@ class MainActivity : AppCompatActivity() {
 
         // Listener para capturar cambios en el campo de texto de la URL
         campoUrl.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // No se realiza ninguna acción antes del cambio de texto
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Se puede manejar el texto mientras cambia (opcional)
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val url = s.toString()
                 val sharedPreferences = getSharedPreferences("WebCheckerPrefs", MODE_PRIVATE)
@@ -114,14 +130,8 @@ class MainActivity : AppCompatActivity() {
 
         // Listener para capturar cambios en el campo de texto de la palabra clave
         campoPalabra.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // No se realiza ninguna acción antes del cambio de texto
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Se puede manejar el texto mientras cambia (opcional)
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val word = s.toString()
                 val sharedPreferences = getSharedPreferences("WebCheckerPrefs", MODE_PRIVATE)
@@ -137,21 +147,7 @@ class MainActivity : AppCompatActivity() {
      * almacenado. También finaliza la aplicación de manera controlada.</p>
      */
     private fun stopWork() {
-        // Cancelar trabajos asociados con la etiqueta
-        //WorkManager.getInstance(this).cancelAllWorkByTag(this.workTag)
-
-        // Cancelar trabajos específicos por ID
         WorkManager.getInstance(this).cancelWorkById(this.workId)
-        //WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).pruneWork()
-        WorkManager.getInstance(this).getWorkInfosByTag(workTag).get().forEach { workInfo ->
-            println("Trabajo ID: ${workInfo.id}, Estado: ${workInfo.state}")
-
-            // Cancelar solo si el trabajo está encolado o en ejecución
-            if (workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING) {
-                WorkManager.getInstance(this).cancelWorkById(workInfo.id)
-                println("Trabajo con ID ${workInfo.id} cancelado")
-            }
-        }
     }
 }
