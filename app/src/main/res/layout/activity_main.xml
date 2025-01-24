@@ -41,7 +41,7 @@
                 android:id="@+id/urlText"
                 android:background="@drawable/custom_edittext"
                 android:layout_marginTop="40dp"
-                android:inputType="textUri"
+                android:inputType="textUri|textWebEditText"
                 android:padding="8dp"
                 android:hint="@string/url"
                 android:drawableStart="@drawable/url"
@@ -66,7 +66,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center|center_horizontal"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="15dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,11 +74,13 @@
                     android:textSize="18sp"
                     android:textColor="@color/purple"
                     android:textAlignment="center"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"/>
                 <Spinner
                     android:id="@+id/frecuenciaSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:textAlignment="center"
                     android:entries="@array/opciones_frecuencia" />
             </LinearLayout>
@@ -89,7 +91,7 @@
                 android:text="@string/on"
                 android:id="@+id/btnOn"
                 android:textSize="18sp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:backgroundTint="@color/purple"
                 app:cornerRadius="20dp"/>
 
