@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Webscraping</string>
+    <string name="web_scraping">Web Scraping</string>
+    <string name="url">Ingresa la URL</string>
+    <string name="palabra">Ingresa la palabra</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+</resources>
