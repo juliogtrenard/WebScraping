@@ -48,7 +48,6 @@ class WebCheckerWorker(appContext: Context, workerParams: WorkerParameters) : Wo
             if (isStopped || semaforo.equals("R")) {
                 println("stopped")
                 return Result.failure()
-
             }
 
             // Obtener la URL y la palabra desde las preferencias compartidas
@@ -64,11 +63,17 @@ class WebCheckerWorker(appContext: Context, workerParams: WorkerParameters) : Wo
                 return Result.failure()
             }
 
-            // Verificar si la palabra está presente
-            if (doc.text().contains(word, ignoreCase = true)) {
-                // Actualizar el contador y fecha
+            // Extraer el texto de la página
+            val textoPagina = doc.text()
+
+            // Contar las ocurrencias de la palabra en el texto de la página (ignorando mayúsculas/minúsculas)
+            val contarOcurrencias = Regex(Regex.escape(word), RegexOption.IGNORE_CASE).findAll(textoPagina).count()
+
+            // Si encontramos la palabra, actualizamos el contador
+            if (contarOcurrencias > 0) {
+                // Obtener el contador actual de veces que se encontró la palabra
                 val currentCount = sharedPreferences.getInt("word_count", 0)
-                val newCount = currentCount + 1
+                val newCount = currentCount + contarOcurrencias
                 val lastFoundDate = System.currentTimeMillis()
 
                 // Guardar el nuevo contador y la fecha

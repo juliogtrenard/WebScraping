@@ -84,6 +84,12 @@ class MainActivity : AppCompatActivity() {
             val sharedPreferences = getSharedPreferences("WebCheckerPrefs", MODE_PRIVATE)
             sharedPreferences.edit().putString("semaforo", semaforo).apply()
 
+            // Reiniciar el contador de veces encontradas a 0
+            sharedPreferences.edit().putInt("word_count", 0).apply()
+
+            // Cancelar cualquier trabajo existente
+            WorkManager.getInstance(this).cancelAllWorkByTag(this.workTag)
+
             // Obtener la frecuencia seleccionada
             val frecuenciaSeleccionada = frecuenciaSpinner.selectedItem.toString()
             val intervaloMinutos = when (frecuenciaSeleccionada) {
@@ -92,9 +98,6 @@ class MainActivity : AppCompatActivity() {
                 "1 hora" -> 60
                 else -> 15 // Valor predeterminado si algo sale mal
             }
-
-            // Cancelar cualquier trabajo existente
-            WorkManager.getInstance(this).cancelAllWorkByTag(this.workTag)
 
             // Crear y encolar el nuevo trabajo con la frecuencia seleccionada
             val workRequest = PeriodicWorkRequestBuilder<WebCheckerWorker>(
