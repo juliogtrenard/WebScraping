@@ -40,7 +40,9 @@ Una aplicación Android que realiza scraping de una página web para buscar una 
 
 ## 📱 Capturas de pantalla
 
-<img src="https://github.com/juliogtrenard/WebScraping/blob/master/app/src/main/res/drawable/imgdemo.png" alt="Aplicación" align="center"/>
+<div align="center">
+<img src="https://github.com/juliogtrenard/WebScraping/blob/master/app/src/main/res/drawable/imgdemo.png" alt="Aplicación"/>
+</div>
 
 ## 🔧 Tecnologías usadas
 
