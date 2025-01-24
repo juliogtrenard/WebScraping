@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "es.juliogtrenard.webscraping"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "es.juliogtrenard.webscraping"
@@ -36,12 +36,13 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation (libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.jsoup)
 }
